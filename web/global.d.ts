@@ -61,6 +61,7 @@ declare global {
 		readonly moreCommitsAvailable: boolean;
 		readonly maxCommits: number;
 		readonly onlyFollowFirstParent: boolean;
+		readonly branchFilterEnabled: boolean;
 		readonly expandedCommit: ExpandedCommit | null;
 		readonly scrollTop: number;
 		readonly findWidget: FindWidgetState;
