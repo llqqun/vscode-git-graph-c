@@ -2,12 +2,12 @@
 	"name": "git-graph",
 	"displayName": "Git Graph",
 	"version": "1.30.0",
-	"publisher": "mhutchie",
+	"publisher": "llqqun",
 	"author": {
-		"name": "Michael Hutchison",
-		"email": "mhutchie@16right.com"
+		"name": "llqqun",
+		"email": "jy381420074@163.com"
 	},
-	"description": "View a Git Graph of your repository, and perform Git actions from the graph.",
+	"description": "Git Graph 二次开发改造添加了中文翻译和新功能",
 	"keywords": [
 		"git",
 		"graph",
