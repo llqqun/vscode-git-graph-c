@@ -223,6 +223,7 @@ export interface GitRepoState {
 /* Git Graph View Types */
 
 export interface GitGraphViewInitialState {
+	readonly translations: { [key: string]: string };
 	readonly config: GitGraphViewConfig;
 	readonly lastActiveRepo: string | null;
 	readonly loadViewTo: LoadGitGraphViewTo;
@@ -232,6 +233,7 @@ export interface GitGraphViewInitialState {
 }
 
 export interface GitGraphViewConfig {
+	readonly language: string;
 	readonly commitDetailsView: CommitDetailsViewConfig;
 	readonly commitOrdering: CommitOrdering;
 	readonly contextMenuActionsVisibility: ContextMenuActionsVisibility;

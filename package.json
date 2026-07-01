@@ -776,6 +776,19 @@
 					"description": "Specifies the path and filename of the Shell executable to be used by the Visual Studio Code Integrated Terminal, when it is opened by Git Graph. For example, to use Git Bash on Windows this setting would commonly be set to \"C:\\Program Files\\Git\\bin\\bash.exe\". If this setting is left blank, the default Shell is used.",
 					"scope": "machine"
 				},
+				"git-graph.language": {
+					"type": "string",
+					"enum": [
+						"en",
+						"zh-cn"
+					],
+					"enumDescriptions": [
+						"English (default)",
+						"简体中文"
+					],
+					"default": "en",
+					"description": "Specifies the display language of Git Graph."
+				},
 				"git-graph.keyboardShortcut.find": {
 					"type": "string",
 					"enum": [

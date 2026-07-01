@@ -16,6 +16,13 @@ declare global {
 	type Config = GG.GitGraphViewConfig;
 
 	const initialState: GG.GitGraphViewInitialState;
+
+	/**
+	 * Get a translated string by key.
+	 * @param key The translation key.
+	 * @param args Optional positional parameters for {0}, {1}, etc.
+	 */
+	function t(key: string, ...args: string[]): string;
 	const globalState: GG.DeepReadonly<GG.GitGraphViewGlobalState>;
 	const workspaceState: GG.DeepReadonly<GG.GitGraphViewWorkspaceState>;
 

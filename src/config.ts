@@ -604,7 +604,15 @@ class Config {
 		if (typeof oldValues !== 'undefined' && typeof oldValues.globalValue !== 'undefined') return oldValues.globalValue;
 		return defaultValue;
 	}
+
+	/**
+	 * Get the value of the git-graph.language Extension Setting.
+	 */
+	get language() {
+		return this.config.get<string>('language', 'en');
+	}
 }
+
 
 /**
  * Get a Config instance for retrieving the users configuration of Git Graph Extension Settings.

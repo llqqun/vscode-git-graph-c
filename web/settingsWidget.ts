@@ -29,7 +29,7 @@ class SettingsWidget {
 
 		this.widgetElem = document.createElement('div');
 		this.widgetElem.id = 'settingsWidget';
-		this.widgetElem.innerHTML = '<h2>Repository Settings</h2><div id="settingsContent"></div><div id="settingsLoading"></div><div id="settingsClose"></div>';
+		this.widgetElem.innerHTML = '<h2>' + t('settingsWidget.title') + '</h2><div id="settingsContent"></div><div id="settingsLoading"></div><div id="settingsClose"></div>';
 		document.body.appendChild(this.widgetElem);
 
 		observeElemScroll('settingsWidget', this.scrollTop, (scrollTop) => {
@@ -151,43 +151,43 @@ class SettingsWidget {
 				? escapeHtml(formatCommaSeparatedList(initialBranches))
 				: 'Show All';
 
-			let html = '<div class="settingsSection general"><h3>General</h3>' +
+			let html = '<div class="settingsSection general"><h3>' + t('settingsWidget.general') + '</h3>' +
 				'<table>' +
 				'<tr class="lineAbove"><td class="left">Name:</td><td class="leftWithEllipsis" title="' + escapedRepoName + (this.repo.name === null ? ' (Default Name from the File System)' : '') + '">' + escapedRepoName + '</td><td class="btns right"><div id="editRepoName" title="Edit Name' + ELLIPSIS + '">' + SVG_ICONS.pencil + '</div>' + (this.repo.name !== null ? ' <div id="deleteRepoName" title="Delete Name' + ELLIPSIS + '">' + SVG_ICONS.close + '</div>' : '') + '</td></tr>' +
 				'<tr class="lineAbove lineBelow"><td class="left">Initial Branches:</td><td class="leftWithEllipsis" title="' + initialBranchesStr + ' (' + (initialBranchesLocallyConfigured ? 'Local' : 'Global') + ')">' + initialBranchesStr + '</td><td class="btns right"><div id="editInitialBranches" title="Edit Initial Branches' + ELLIPSIS + '">' + SVG_ICONS.pencil + '</div>' + (initialBranchesLocallyConfigured ? ' <div id="clearInitialBranches" title="Clear Initial Branches' + ELLIPSIS + '">' + SVG_ICONS.close + '</div>' : '') + '</td></tr>' +
 				'</table>' +
-				'<label id="settingsShowStashes"><input type="checkbox" id="settingsShowStashesCheckbox" tabindex="-1"><span class="customCheckbox"></span>Show Stashes</label><br/>' +
-				'<label id="settingsShowTags"><input type="checkbox" id="settingsShowTagsCheckbox" tabindex="-1"><span class="customCheckbox"></span>Show Tags</label><br/>' +
-				'<label id="settingsIncludeCommitsMentionedByReflogs"><input type="checkbox" id="settingsIncludeCommitsMentionedByReflogsCheckbox" tabindex="-1"><span class="customCheckbox"></span>Include commits only mentioned by reflogs</label><span class="settingsWidgetInfo" title="Only applies when showing all branches.">' + SVG_ICONS.info + '</span><br/>' +
-				'<label id="settingsOnlyFollowFirstParent"><input type="checkbox" id="settingsOnlyFollowFirstParentCheckbox" tabindex="-1"><span class="customCheckbox"></span>Only follow the first parent of commits</label><span class="settingsWidgetInfo" title="Instead of following all parents of commits, only follow the first parent when discovering the commits to load.">' + SVG_ICONS.info + '</span>' +
+				'<label id="settingsShowStashes"><input type="checkbox" id="settingsShowStashesCheckbox" tabindex="-1"><span class="customCheckbox"></span>' + t('settingsWidget.showStashes') + '</label><br/>' +
+				'<label id="settingsShowTags"><input type="checkbox" id="settingsShowTagsCheckbox" tabindex="-1"><span class="customCheckbox"></span>' + t('settingsWidget.showTags') + '</label><br/>' +
+				'<label id="settingsIncludeCommitsMentionedByReflogs"><input type="checkbox" id="settingsIncludeCommitsMentionedByReflogsCheckbox" tabindex="-1"><span class="customCheckbox"></span>' + t('settingsWidget.includeReflogCommits') + '</label><span class="settingsWidgetInfo" title="Only applies when showing all branches.">' + SVG_ICONS.info + '</span><br/>' +
+				'<label id="settingsOnlyFollowFirstParent"><input type="checkbox" id="settingsOnlyFollowFirstParentCheckbox" tabindex="-1"><span class="customCheckbox"></span>' + t('settingsWidget.onlyFollowFirstParent') + '</label><span class="settingsWidgetInfo" title="Instead of following all parents of commits, only follow the first parent when discovering the commits to load.">' + SVG_ICONS.info + '</span>' +
 				'</div>';
 
 			let userNameSet = false, userEmailSet = false;
 			if (this.config !== null) {
-				html += '<div class="settingsSection centered"><h3>User Details</h3>';
+				html += '<div class="settingsSection centered"><h3>' + t('settingsWidget.userDetails') + '</h3>';
 				const userName = this.config.user.name, userEmail = this.config.user.email;
 				userNameSet = userName.local !== null || userName.global !== null;
 				userEmailSet = userEmail.local !== null || userEmail.global !== null;
 				if (userNameSet || userEmailSet) {
-					const escapedUserName = escapeHtml(userName.local ?? userName.global ?? 'Not Set');
-					const escapedUserEmail = escapeHtml(userEmail.local ?? userEmail.global ?? 'Not Set');
+					const escapedUserName = escapeHtml(userName.local ?? userName.global ?? t('settingsWidget.userDetails.notSet'));
+					const escapedUserEmail = escapeHtml(userEmail.local ?? userEmail.global ?? t('settingsWidget.userDetails.notSet'));
 					html += '<table>' +
-						'<tr><td class="left">User Name:</td><td class="leftWithEllipsis" title="' + escapedUserName + (userNameSet ? ' (' + (userName.local !== null ? 'Local' : 'Global') + ')' : '') + '">' + escapedUserName + '</td></tr>' +
-						'<tr><td class="left">User Email:</td><td class="leftWithEllipsis" title="' + escapedUserEmail + (userEmailSet ? ' (' + (userEmail.local !== null ? 'Local' : 'Global') + ')' : '') + '">' + escapedUserEmail + '</td></tr>' +
+						'<tr><td class="left">' + t('settingsWidget.userDetails.name') + ':</td><td class="leftWithEllipsis" title="' + escapedUserName + (userNameSet ? ' (' + (userName.local !== null ? 'Local' : 'Global') + ')' : '') + '">' + escapedUserName + '</td></tr>' +
+						'<tr><td class="left">' + t('settingsWidget.userDetails.email') + ':</td><td class="leftWithEllipsis" title="' + escapedUserEmail + (userEmailSet ? ' (' + (userEmail.local !== null ? 'Local' : 'Global') + ')' : '') + '">' + escapedUserEmail + '</td></tr>' +
 						'</table>' +
-						'<div class="settingsSectionButtons"><div id="editUserDetails" class="editBtn">' + SVG_ICONS.pencil + 'Edit</div><div id="removeUserDetails" class="removeBtn">' + SVG_ICONS.close + 'Remove</div></div>';
+						'<div class="settingsSectionButtons"><div id="editUserDetails" class="editBtn">' + SVG_ICONS.pencil + t('settingsWidget.userDetails.edit') + '</div><div id="removeUserDetails" class="removeBtn">' + SVG_ICONS.close + t('settingsWidget.userDetails.remove') + '</div></div>';
 				} else {
-					html += '<span>User Details (such as name and email) are used by Git to record the Author and Committer of commit objects.</span>' +
-						'<div class="settingsSectionButtons"><div id="editUserDetails" class="addBtn">' + SVG_ICONS.plus + 'Add User Details</div></div>';
+					html += '<span>' + t('settingsWidget.userDetails.description') + '</span>' +
+						'<div class="settingsSectionButtons"><div id="editUserDetails" class="addBtn">' + SVG_ICONS.plus + t('settingsWidget.userDetails.add') + '</div></div>';
 				}
 				html += '</div>';
 
-				html += '<div class="settingsSection"><h3>Remote Configuration</h3><table><tr><th>Remote</th><th>URL</th><th>Type</th><th>Action</th></tr>';
+				html += '<div class="settingsSection"><h3>' + t('settingsWidget.remotes') + '</h3><table><tr><th>' + t('settingsWidget.remoteName') + '</th><th>' + t('settingsWidget.remoteUrl') + '</th><th>' + t('settingsWidget.remoteType') + '</th><th>' + t('settingsWidget.remoteAction') + '</th></tr>';
 				if (this.config.remotes.length > 0) {
 					const hideRemotes = this.repo.hideRemotes;
 					this.config.remotes.forEach((remote, i) => {
 						const hidden = hideRemotes.includes(remote.name);
-						const fetchUrl = escapeHtml(remote.url || 'Not Set'), pushUrl = escapeHtml(remote.pushUrl || remote.url || 'Not Set');
+						const fetchUrl = escapeHtml(remote.url || t('settingsWidget.userDetails.notSet')), pushUrl = escapeHtml(remote.pushUrl || remote.url || t('settingsWidget.userDetails.notSet'));
 						html += '<tr class="lineAbove">' +
 							'<td class="left" rowspan="2"><span class="hideRemoteBtn" data-index="' + i + '" title="Click to ' + (hidden ? 'show' : 'hide') + ' branches of this remote.">' + (hidden ? SVG_ICONS.eyeClosed : SVG_ICONS.eyeOpen) + '</span>' + escapeHtml(remote.name) + '</td>' +
 							'<td class="leftWithEllipsis" title="Fetch URL: ' + fetchUrl + '">' + fetchUrl + '</td><td>Fetch</td>' +
@@ -195,25 +195,25 @@ class SettingsWidget {
 							'</tr><tr><td class="leftWithEllipsis" title="Push URL: ' + pushUrl + '">' + pushUrl + '</td><td>Push</td></tr>';
 					});
 				} else {
-					html += '<tr class="lineAbove"><td colspan="4">There are no remotes configured for this repository.</td></tr>';
+					html += '<tr class="lineAbove"><td colspan="4">' + t('settingsWidget.noRemotes') + '</td></tr>';
 				}
-				html += '</table><div class="settingsSectionButtons lineAbove"><div id="settingsAddRemote" class="addBtn">' + SVG_ICONS.plus + 'Add Remote</div></div></div>';
+				html += '</table><div class="settingsSectionButtons lineAbove"><div id="settingsAddRemote" class="addBtn">' + SVG_ICONS.plus + t('settingsWidget.addRemote') + '</div></div></div>';
 			}
 
-			html += '<div class="settingsSection centered"><h3>Issue Linking</h3>';
+			html += '<div class="settingsSection centered"><h3>' + t('settingsWidget.issueLinking') + '</h3>';
 			const issueLinkingConfig = this.repo.issueLinkingConfig || globalState.issueLinkingConfig;
 			if (issueLinkingConfig !== null) {
 				const escapedIssue = escapeHtml(issueLinkingConfig.issue), escapedUrl = escapeHtml(issueLinkingConfig.url);
-				html += '<table><tr><td class="left">Issue Regex:</td><td class="leftWithEllipsis" title="' + escapedIssue + '">' + escapedIssue + '</td></tr><tr><td class="left">Issue URL:</td><td class="leftWithEllipsis" title="' + escapedUrl + '">' + escapedUrl + '</td></tr></table>' +
-					'<div class="settingsSectionButtons"><div id="editIssueLinking" class="editBtn">' + SVG_ICONS.pencil + 'Edit</div><div id="removeIssueLinking" class="removeBtn">' + SVG_ICONS.close + 'Remove</div></div>';
+				html += '<table><tr><td class="left">' + t('settingsWidget.issueLinking.issue') + ':</td><td class="leftWithEllipsis" title="' + escapedIssue + '">' + escapedIssue + '</td></tr><tr><td class="left">' + t('settingsWidget.issueLinking.url') + ':</td><td class="leftWithEllipsis" title="' + escapedUrl + '">' + escapedUrl + '</td></tr></table>' +
+					'<div class="settingsSectionButtons"><div id="editIssueLinking" class="editBtn">' + SVG_ICONS.pencil + t('settingsWidget.userDetails.edit') + '</div><div id="removeIssueLinking" class="removeBtn">' + SVG_ICONS.close + t('settingsWidget.userDetails.remove') + '</div></div>';
 			} else {
-				html += '<span>Issue Linking converts issue numbers in commit &amp; tag messages into hyperlinks, that open the issue in your issue tracking system. If a branch\'s name contains an issue number, the issue can be viewed via the branch\'s context menu.</span>' +
-					'<div class="settingsSectionButtons"><div id="editIssueLinking" class="addBtn">' + SVG_ICONS.plus + 'Add Issue Linking</div></div>';
+				html += '<span>' + t('settingsWidget.issueLinking.description') + '</span>' +
+					'<div class="settingsSectionButtons"><div id="editIssueLinking" class="addBtn">' + SVG_ICONS.plus + t('settingsWidget.issueLinking.add') + '</div></div>';
 			}
 			html += '</div>';
 
 			if (this.config !== null) {
-				html += '<div class="settingsSection centered"><h3>Pull Request Creation</h3>';
+				html += '<div class="settingsSection centered"><h3>' + t('settingsWidget.pullRequest') + '</h3>';
 				const pullRequestConfig = this.repo.pullRequestConfig;
 				if (pullRequestConfig !== null) {
 					const provider = escapeHtml((pullRequestConfig.provider === GG.PullRequestProvider.Bitbucket
@@ -231,17 +231,17 @@ class SettingsWidget {
 						'<tr><td class="left">Source Repo:</td><td class="leftWithEllipsis" title="' + source + '">' + source + '</td></tr>' +
 						'<tr><td class="left">Destination Repo:</td><td class="leftWithEllipsis" title="' + destination + '">' + destination + '</td></tr>' +
 						'<tr><td class="left">Destination Branch:</td><td class="leftWithEllipsis" title="' + destinationBranch + '">' + destinationBranch + '</td></tr></table>' +
-						'<div class="settingsSectionButtons"><div id="editPullRequestIntegration" class="editBtn">' + SVG_ICONS.pencil + 'Edit</div><div id="removePullRequestIntegration" class="removeBtn">' + SVG_ICONS.close + 'Remove</div></div>';
+						'<div class="settingsSectionButtons"><div id="editPullRequestIntegration" class="editBtn">' + SVG_ICONS.pencil + t('settingsWidget.userDetails.edit') + '</div><div id="removePullRequestIntegration" class="removeBtn">' + SVG_ICONS.close + t('settingsWidget.userDetails.remove') + '</div></div>';
 				} else {
-					html += '<span>Pull Request Creation automates the opening and pre-filling of a Pull Request form, directly from a branch\'s context menu.</span>' +
-						'<div class="settingsSectionButtons"><div id="editPullRequestIntegration" class="addBtn">' + SVG_ICONS.plus + 'Configure "Pull Request Creation" Integration</div></div>';
+					html += '<span>' + t('settingsWidget.pullRequest.description') + '</span>' +
+						'<div class="settingsSectionButtons"><div id="editPullRequestIntegration" class="addBtn">' + SVG_ICONS.plus + t('settingsWidget.pullRequest.configure') + '</div></div>';
 				}
 				html += '</div>';
 			}
 
-			html += '<div class="settingsSection"><h3>Git Graph Configuration</h3><div class="settingsSectionButtons">' +
-				'<div id="openExtensionSettings">' + SVG_ICONS.gear + 'Open Git Graph Extension Settings</div><br/>' +
-				'<div id="exportRepositoryConfig">' + SVG_ICONS.package + 'Export Repository Configuration</div>' +
+			html += '<div class="settingsSection"><h3>' + t('settingsWidget.configSection') + '</h3><div class="settingsSectionButtons">' +
+				'<div id="openExtensionSettings">' + SVG_ICONS.gear + t('settingsWidget.openExtensionSettings') + '</div><br/>' +
+				'<div id="exportRepositoryConfig">' + SVG_ICONS.package + t('settingsWidget.exportConfig') + '</div>' +
 				'</div></div>';
 
 			this.contentsElem.innerHTML = html;
@@ -250,7 +250,7 @@ class SettingsWidget {
 				if (this.currentRepo === null || this.repo === null) return;
 				dialog.showForm('Specify a Name for this Repository:', [
 					{ type: DialogInputType.Text, name: 'Name', default: this.repo.name || '', placeholder: getRepoName(this.currentRepo) }
-				], 'Save Name', (values) => {
+				], t('dialog.save'), (values) => {
 					if (this.currentRepo === null) return;
 					this.view.saveRepoStateValue(this.currentRepo, 'name', <string>values[0] || null);
 					this.view.renderRepoDropdownOptions();
@@ -261,7 +261,7 @@ class SettingsWidget {
 			if (this.repo.name !== null) {
 				document.getElementById('deleteRepoName')!.addEventListener('click', () => {
 					if (this.currentRepo === null || this.repo === null || this.repo.name === null) return;
-					dialog.showConfirmation('Are you sure you want to delete the manually configured name <b><i>' + escapeHtml(this.repo.name) + '</i></b> for this repository, and use the default name from the File System <b><i>' + escapeHtml(getRepoName(this.currentRepo)) + '</i></b>?', 'Yes, delete', () => {
+					dialog.showConfirmation('Are you sure you want to delete the manually configured name <b><i>' + escapeHtml(this.repo.name) + '</i></b> for this repository, and use the default name from the File System <b><i>' + escapeHtml(getRepoName(this.currentRepo)) + '</i></b>?', t('dialog.yesDelete'), () => {
 						if (this.currentRepo === null) return;
 						this.view.saveRepoStateValue(this.currentRepo, 'name', null);
 						this.view.renderRepoDropdownOptions();
@@ -277,19 +277,19 @@ class SettingsWidget {
 				dialog.showForm('<b>Configure Initial Branches</b><p style="margin:6px 0;">Configure the branches that are initially shown when this repository is loaded in the Git Graph View.</p><p style="font-size:12px; margin:6px 0 0 0;">Note: When "Checked Out Branch" is Disabled, and no "Specific Branches" are selected, all branches will be shown.</p>', [
 					{ type: DialogInputType.Checkbox, name: 'Checked Out Branch', value: showCheckedOutBranch },
 					{ type: DialogInputType.Select, name: 'Specific Branches', options: this.view.getBranchOptions(), defaults: showSpecificBranches, multiple: true }
-				], 'Save Configuration', (values) => {
+				], t('dialog.saveConfig'), (values) => {
 					if (this.currentRepo === null) return;
 					if (showCheckedOutBranch !== values[0] || !arraysStrictlyEqualIgnoringOrder(showSpecificBranches, <string[]>values[1])) {
 						this.view.saveRepoStateValue(this.currentRepo, 'onRepoLoadShowCheckedOutBranch', values[0] ? GG.BooleanOverride.Enabled : GG.BooleanOverride.Disabled);
 						this.view.saveRepoStateValue(this.currentRepo, 'onRepoLoadShowSpecificBranches', <string[]>values[1]);
 						this.render();
 					}
-				}, null, 'Cancel', null, false);
+				}, null, t('dialog.cancel'), null, false);
 			});
 
 			if (initialBranchesLocallyConfigured) {
 				document.getElementById('clearInitialBranches')!.addEventListener('click', () => {
-					dialog.showConfirmation('Are you sure you want to clear the branches that are initially shown when this repository is loaded in the Git Graph View?', 'Yes, clear', () => {
+					dialog.showConfirmation('Are you sure you want to clear the branches that are initially shown when this repository is loaded in the Git Graph View?', t('dialog.yesClear'), () => {
 						if (this.currentRepo === null) return;
 						this.view.saveRepoStateValue(this.currentRepo, 'onRepoLoadShowCheckedOutBranch', GG.BooleanOverride.Default);
 						this.view.saveRepoStateValue(this.currentRepo, 'onRepoLoadShowSpecificBranches', null);
@@ -366,7 +366,7 @@ class SettingsWidget {
 						if (this.config === null) return;
 						const userName = this.config.user.name, userEmail = this.config.user.email;
 						const isGlobal = userName.local === null && userEmail.local === null;
-						dialog.showConfirmation('Are you sure you want to remove the <b>' + (isGlobal ? 'globally' : 'locally') + ' configured</b> user name and email, which are used by Git to record the Author and Committer of commit objects?', 'Yes, remove', () => {
+						dialog.showConfirmation('Are you sure you want to remove the <b>' + (isGlobal ? 'globally' : 'locally') + ' configured</b> user name and email, which are used by Git to record the Author and Committer of commit objects?', t('dialog.yesRemove'), () => {
 							if (this.currentRepo === null) return;
 							runAction({
 								command: 'deleteUserDetails',
@@ -408,7 +408,7 @@ class SettingsWidget {
 				addListenerToClass('deleteRemote', 'click', (e) => {
 					const remote = this.getRemoteForBtnEvent(e);
 					if (remote === null) return;
-					dialog.showConfirmation('Are you sure you want to delete the remote <b><i>' + escapeHtml(remote.name) + '</i></b>?', 'Yes, delete', () => {
+					dialog.showConfirmation('Are you sure you want to delete the remote <b><i>' + escapeHtml(remote.name) + '</i></b>?', t('dialog.yesDelete'), () => {
 						if (this.currentRepo === null) return;
 						runAction({ command: 'deleteRemote', repo: this.currentRepo, name: remote.name }, 'Deleting Remote');
 					}, { type: TargetType.Repo });
@@ -466,7 +466,7 @@ class SettingsWidget {
 				document.getElementById('removeIssueLinking')!.addEventListener('click', () => {
 					if (this.repo === null) return;
 					const locallyConfigured = this.repo.issueLinkingConfig !== null;
-					dialog.showConfirmation('Are you sure you want to remove ' + (locallyConfigured ? (globalState.issueLinkingConfig !== null ? 'the <b>locally configured</b> ' : '') + 'Issue Linking from this repository' : 'the <b>globally configured</b> Issue Linking in Git Graph') + '?', 'Yes, remove', () => {
+					dialog.showConfirmation('Are you sure you want to remove ' + (locallyConfigured ? (globalState.issueLinkingConfig !== null ? 'the <b>locally configured</b> ' : '') + 'Issue Linking from this repository' : 'the <b>globally configured</b> Issue Linking in Git Graph') + '?', t('dialog.yesRemove'), () => {
 						this.setIssueLinkingConfig(null, !locallyConfigured);
 					}, null);
 				});
@@ -477,7 +477,7 @@ class SettingsWidget {
 					if (this.repo === null || this.config === null) return;
 
 					if (this.config.remotes.length === 0) {
-						dialog.showError('Unable to configure the "Pull Request Creation" Integration', 'The repository must have at least one remote to configure the "Pull Request Creation" Integration. There are no remotes in the current repository.', null, null);
+						dialog.showError('Unable to configure the "Pull Request Creation" Integration', t('settingsWidget.pullRequest.noRemotesError'), null, null);
 						return;
 					}
 
@@ -511,7 +511,7 @@ class SettingsWidget {
 
 				if (this.repo.pullRequestConfig !== null) {
 					document.getElementById('removePullRequestIntegration')!.addEventListener('click', () => {
-						dialog.showConfirmation('Are you sure you want to remove the configured "Pull Request Creation" Integration?', 'Yes, remove', () => {
+						dialog.showConfirmation('Are you sure you want to remove the configured "Pull Request Creation" Integration?', t('dialog.yesRemove'), () => {
 							this.setPullRequestConfig(null);
 						}, null);
 					});
@@ -523,9 +523,9 @@ class SettingsWidget {
 			});
 
 			document.getElementById('exportRepositoryConfig')!.addEventListener('click', () => {
-				dialog.showConfirmation('Exporting the Git Graph Repository Configuration will generate a file that can be committed in this repository. It allows others working in this repository to use the same configuration.', 'Yes, export', () => {
+				dialog.showConfirmation('Exporting the Git Graph Repository Configuration will generate a file that can be committed in this repository. It allows others working in this repository to use the same configuration.', t('dialog.yesExport'), () => {
 					if (this.currentRepo === null) return;
-					runAction({ command: 'exportRepoConfig', repo: this.currentRepo }, 'Exporting Repository Configuration');
+					runAction({ command: 'exportRepoConfig', repo: this.currentRepo }, t('action.exportingRepoConfig'));
 				}, null);
 			});
 		}
@@ -593,7 +593,7 @@ class SettingsWidget {
 			{ type: DialogInputType.Text, name: 'Issue Regex', default: defaultIssueRegex !== null ? defaultIssueRegex : '', placeholder: null, info: 'A regular expression that matches your issue numbers, with one or more capturing groups ( ) that will be substituted into the "Issue URL".' },
 			{ type: DialogInputType.Text, name: 'Issue URL', default: defaultIssueUrl !== null ? defaultIssueUrl : '', placeholder: null, info: 'The issue\'s URL in your issue tracking system, with placeholders ($1, $2, etc.) for the groups captured ( ) in the "Issue Regex".' },
 			{ type: DialogInputType.Checkbox, name: 'Use Globally', value: defaultUseGlobally, info: 'Use the "Issue Regex" and "Issue URL" for all repositories by default (it can be overridden per repository). Note: "Use Globally" is only suitable if identical Issue Linking applies to the majority of your repositories (e.g. when using JIRA or Pivotal Tracker).' }
-		], 'Save', (values) => {
+		], t('dialog.save'), (values) => {
 			let issueRegex = (<string>values[0]).trim(), issueUrl = (<string>values[1]).trim(), useGlobally = <boolean>values[2];
 			let regExpParseError = null;
 			try {
@@ -606,17 +606,17 @@ class SettingsWidget {
 				regExpParseError = e.message;
 			}
 			if (regExpParseError !== null) {
-				dialog.showError('Invalid Issue Regex', regExpParseError, 'Go Back', () => {
+				dialog.showError('Invalid Issue Regex', regExpParseError, t('dialog.goBack'), () => {
 					this.showIssueLinkingDialog(issueRegex, issueUrl, useGlobally, isEdit);
 				});
 			} else if (!(/\$([1-9][0-9]*)/.test(issueUrl))) {
-				dialog.showError('Invalid Issue URL', 'The Issue URL does not contain any placeholders ($1, $2, etc.) for the issue number components captured in the Issue Regex.', 'Go Back', () => {
+				dialog.showError('Invalid Issue URL', 'The Issue URL does not contain any placeholders ($1, $2, etc.) for the issue number components captured in the Issue Regex.', t('dialog.goBack'), () => {
 					this.showIssueLinkingDialog(issueRegex, issueUrl, useGlobally, isEdit);
 				});
 			} else {
 				this.setIssueLinkingConfig({ issue: issueRegex, url: issueUrl }, useGlobally);
 			}
-		}, null, 'Cancel', null, false);
+		}, null, t('dialog.cancel'), null, false);
 	}
 
 	/**
@@ -791,7 +791,7 @@ class SettingsWidget {
 			}
 		);
 
-		dialog.showForm('Configure "Pull Request Creation" Integration (Step&nbsp;2/2)', inputs, 'Save Configuration', (values) => {
+		dialog.showForm('Configure "Pull Request Creation" Integration (Step&nbsp;2/2)', inputs, t('dialog.saveConfig'), (values) => {
 			updateConfigWithFormValues(values);
 			this.setPullRequestConfig(config);
 		}, { type: TargetType.Repo }, 'Back', (values) => {

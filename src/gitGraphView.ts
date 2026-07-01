@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { AvatarManager } from './avatarManager';
 
 import { getConfig } from './config';
+import { loadTranslations } from './i18n';
 
 import { DataSource, GitCommitDetailsData, GitConfigKey } from './dataSource';
 
@@ -1383,7 +1384,9 @@ export class GitGraphView extends Disposable {
 
 				showStashes: config.showStashes,
 
-				showTags: config.showTags
+				showTags: config.showTags,
+
+				language: config.language
 
 			},
 
@@ -1395,7 +1398,9 @@ export class GitGraphView extends Disposable {
 
 			loadRepoInfoRefreshId: this.loadRepoInfoRefreshId,
 
-			loadCommitsRefreshId: this.loadCommitsRefreshId
+			loadCommitsRefreshId: this.loadCommitsRefreshId,
+
+			translations: loadTranslations(config.language)
 
 		};
 
@@ -1441,14 +1446,14 @@ export class GitGraphView extends Disposable {
 
 					<label id="showRemoteBranchesControl"><input type="checkbox" id="showRemoteBranchesCheckbox" tabindex="-1"><span class="customCheckbox"></span>Show Remote Branches</label>
 
-					<div id="findBtn" title="Find"></div>
+					<div id="findBtn" title=""></div>
 
-					<div id="terminalBtn" title="Open a Terminal for this Repository"></div>
+					<div id="terminalBtn" title=""></div>
 
-					<div id="settingsBtn" title="Repository Settings"></div>
+					<div id="settingsBtn" title=""></div>
 
 				<div id="fetchBtn"></div>
-				<div id="branchFilterBtn" title="Show Current Branch Only"></div>
+				<div id="branchFilterBtn" title=""></div>
 				<div id="refreshBtn"></div>
 				</div>
 

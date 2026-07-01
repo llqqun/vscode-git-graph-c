@@ -1,4 +1,4 @@
-﻿class GitGraphView {
+class GitGraphView {
 	private gitRepos: GG.GitRepoSet;
 
 	private gitBranches: ReadonlyArray<string> = [];
@@ -137,13 +137,13 @@
 
 		this.graph = new Graph('commitGraph', viewElem, this.config.graph, this.config.mute);
 
-		this.repoDropdown = new Dropdown('repoDropdown', true, false, 'Repos', (values) => {
+		this.repoDropdown = new Dropdown('repoDropdown', true, false, t('repoDropdown.label'), (values) => {
 
 			this.loadRepo(values[0]);
 
 		});
 
-		this.branchDropdown = new Dropdown('branchDropdown', false, true, 'Branches', (values) => {
+		this.branchDropdown = new Dropdown('branchDropdown', false, true, t('branchDropdown.label'), (values) => {
 
 			this.currentBranches = values;
 
@@ -252,7 +252,7 @@
 
 		const fetchBtn = document.getElementById('fetchBtn')!, findBtn = document.getElementById('findBtn')!, settingsBtn = document.getElementById('settingsBtn')!, terminalBtn = document.getElementById('terminalBtn')!;
 
-		fetchBtn.title = 'Fetch' + (this.config.fetchAndPrune ? ' & Prune' : '') + ' from Remote(s)';
+		fetchBtn.title = t(this.config.fetchAndPrune ? 'fetchBtn.titlePrune' : 'fetchBtn.title');
 
 		fetchBtn.innerHTML = SVG_ICONS.download;
 
@@ -278,17 +278,17 @@
 
 				name: this.gitRepos[this.currentRepo].name || getRepoName(this.currentRepo)
 
-			}, 'Opening Terminal');
+			}, t('action.openingTerminal'));
 		});
 
 		this.branchFilterBtnElem = document.getElementById('branchFilterBtn')!;
 		this.branchFilterBtnElem.innerHTML = this.branchFilterEnabled ? SVG_ICONS.eyeClosed : SVG_ICONS.eyeOpen;
-		this.branchFilterBtnElem.title = this.branchFilterEnabled ? 'Show All Commits' : 'Show Current Branch Only';
+		this.branchFilterBtnElem.title = this.branchFilterEnabled ? t('branchFilterBtn.titleOn') : t('branchFilterBtn.titleOff');
 		alterClass(this.branchFilterBtnElem, 'active', this.branchFilterEnabled);
 		this.branchFilterBtnElem.addEventListener('click', () => {
 			this.branchFilterEnabled = !this.branchFilterEnabled;
 			this.branchFilterBtnElem.innerHTML = this.branchFilterEnabled ? SVG_ICONS.eyeClosed : SVG_ICONS.eyeOpen;
-			this.branchFilterBtnElem.title = this.branchFilterEnabled ? 'Show All Commits' : 'Show Current Branch Only';
+			this.branchFilterBtnElem.title = this.branchFilterEnabled ? t('branchFilterBtn.titleOn') : t('branchFilterBtn.titleOff');
 			alterClass(this.branchFilterBtnElem, 'active', this.branchFilterEnabled);
 			this.saveState();
 			this.refresh(true);
@@ -828,7 +828,7 @@
 
 		} else {
 
-			this.displayLoadDataError('Unable to load Repository Info', msg.error);
+			this.displayLoadDataError(t('error.unableLoadRepoInfo'), msg.error);
 
 		}
 
@@ -850,11 +850,11 @@
 
 			const error = this.gitBranches.length === 0 && msg.error.indexOf('bad revision \'HEAD\'') > -1
 
-				? 'There are no commits in this repository.'
+				? t('error.noCommits')
 
 				: msg.error;
 
-			this.displayLoadDataError('Unable to load Commits', error);
+			this.displayLoadDataError(t('error.unableLoadCommits'), error);
 
 		}
 
@@ -1540,7 +1540,7 @@
 
 		this.tableElem.innerHTML = '<table>' + html + '</table>';
 
-		this.footerElem.innerHTML = this.moreCommitsAvailable ? '<div id="loadMoreCommitsBtn" class="roundedBtn">Load More Commits</div>' : '';
+		this.footerElem.innerHTML = this.moreCommitsAvailable ? '<div id="loadMoreCommitsBtn" class="roundedBtn">' + t('loadMoreCommitsBtn') + '</div>' : '';
 
 		this.makeTableResizable();
 
@@ -1654,7 +1654,7 @@
 
 		const enabled = !this.currentRepoRefreshState.inProgress;
 
-		this.refreshBtnElem.title = enabled ? 'Refresh' : 'Refreshing';
+		this.refreshBtnElem.title = enabled ? t('refreshBtn.title') : t('refreshBtn.titleRefreshing');
 
 		this.refreshBtnElem.innerHTML = enabled ? SVG_ICONS.refresh : SVG_ICONS.loading;
 
@@ -1720,7 +1720,7 @@
 
 			{
 
-				title: 'Checkout Branch',
+				title: t('contextMenu.branch.checkout'),
 
 				visible: visibility.checkout && this.gitBranchHead !== refName,
 
@@ -1728,7 +1728,7 @@
 
 			}, {
 
-				title: 'Rename Branch' + ELLIPSIS,
+				title: t('contextMenu.branch.rename'),
 
 				visible: visibility.rename,
 
@@ -1736,7 +1736,7 @@
 
 					dialog.showRefInput('Enter the new name for branch <b><i>' + escapeHtml(refName) + '</i></b>:', refName, 'Rename Branch', (newName) => {
 
-						runAction({ command: 'renameBranch', repo: this.currentRepo, oldName: refName, newName: newName }, 'Renaming Branch');
+						runAction({ command: 'renameBranch', repo: this.currentRepo, oldName: refName, newName: newName }, t('action.renamingBranch'));
 
 					}, target);
 
@@ -1744,7 +1744,7 @@
 
 			}, {
 
-				title: 'Delete Branch' + ELLIPSIS,
+				title: t('contextMenu.branch.delete'),
 
 				visible: visibility.delete && this.gitBranchHead !== refName,
 
@@ -1772,7 +1772,7 @@
 
 					dialog.showForm('Are you sure you want to delete the branch <b><i>' + escapeHtml(refName) + '</i></b>?', inputs, 'Yes, delete', (values) => {
 
-						runAction({ command: 'deleteBranch', repo: this.currentRepo, branchName: refName, forceDelete: <boolean>values[0], deleteOnRemotes: remotesWithBranch.length > 0 && <boolean>values[1] ? remotesWithBranch : [] }, 'Deleting Branch');
+						runAction({ command: 'deleteBranch', repo: this.currentRepo, branchName: refName, forceDelete: <boolean>values[0], deleteOnRemotes: remotesWithBranch.length > 0 && <boolean>values[1] ? remotesWithBranch : [] }, t('action.deletingBranch'));
 
 					}, target);
 
@@ -1780,7 +1780,7 @@
 
 			}, {
 
-				title: 'Merge into current branch' + ELLIPSIS,
+				title: t('contextMenu.branch.merge'),
 
 				visible: visibility.merge && this.gitBranchHead !== refName,
 
@@ -1788,7 +1788,7 @@
 
 			}, {
 
-				title: 'Rebase current branch on Branch' + ELLIPSIS,
+				title: t('contextMenu.branch.rebase'),
 
 				visible: visibility.rebase && this.gitBranchHead !== refName,
 
@@ -1796,7 +1796,7 @@
 
 			}, {
 
-				title: 'Push Branch' + ELLIPSIS,
+				title: t('contextMenu.branch.push'),
 
 				visible: visibility.push && this.gitRemotes.length > 0,
 
@@ -1870,7 +1870,7 @@
 
 							willUpdateBranchConfig: setUpstream && remotes.length > 0 && (this.gitConfig === null || typeof this.gitConfig.branches[refName] === 'undefined' || this.gitConfig.branches[refName].remote !== remotes[remotes.length - 1])
 
-						}, 'Pushing Branch');
+						}, t('action.pushingBranch'));
 
 					}, target);
 
@@ -1884,7 +1884,7 @@
 
 			{
 
-				title: 'Create Pull Request' + ELLIPSIS,
+				title: t('contextMenu.branch.createPullRequest'),
 
 				visible: visibility.createPullRequest && this.gitRepos[this.currentRepo].pullRequestConfig !== null,
 
@@ -1896,7 +1896,7 @@
 
 					dialog.showCheckbox('Are you sure you want to create a Pull Request for branch <b><i>' + escapeHtml(refName) + '</i></b>?', 'Push branch before creating the Pull Request', true, 'Yes, create Pull Request', (push) => {
 
-						runAction({ command: 'createPullRequest', repo: this.currentRepo, config: config, sourceRemote: config.sourceRemote, sourceOwner: config.sourceOwner, sourceRepo: config.sourceRepo, sourceBranch: refName, push: push }, 'Creating Pull Request');
+						runAction({ command: 'createPullRequest', repo: this.currentRepo, config: config, sourceRemote: config.sourceRemote, sourceOwner: config.sourceOwner, sourceRepo: config.sourceRepo, sourceBranch: refName, push: push }, t('action.creatingPullRequest'));
 
 					}, target);
 
@@ -1908,13 +1908,13 @@
 
 			{
 
-				title: 'Create Archive',
+				title: t('contextMenu.branch.createArchive'),
 
 				visible: visibility.createArchive,
 
 				onClick: () => {
 
-					runAction({ command: 'createArchive', repo: this.currentRepo, ref: refName }, 'Creating Archive');
+					runAction({ command: 'createArchive', repo: this.currentRepo, ref: refName }, t('action.creatingArchive'));
 
 				}
 
@@ -1922,7 +1922,7 @@
 
 			{
 
-				title: 'Select in Branches Dropdown',
+				title: t('contextMenu.branch.selectInDropdown'),
 
 				visible: visibility.selectInBranchesDropdown && !isSelectedInBranchesDropdown,
 
@@ -1932,7 +1932,7 @@
 
 			{
 
-				title: 'Unselect in Branches Dropdown',
+				title: t('contextMenu.branch.unselectInDropdown'),
 
 				visible: visibility.unselectInBranchesDropdown && isSelectedInBranchesDropdown,
 
@@ -1944,7 +1944,7 @@
 
 			{
 
-				title: 'Copy Branch Name to Clipboard',
+				title: t('contextMenu.branch.copyName'),
 
 				visible: visibility.copyName,
 
@@ -1970,7 +1970,7 @@
 
 			{
 
-				title: 'Add Tag' + ELLIPSIS,
+				title: t('contextMenu.commit.addTag'),
 
 				visible: visibility.addTag,
 
@@ -1978,7 +1978,7 @@
 
 			}, {
 
-				title: 'Create Branch' + ELLIPSIS,
+				title: t('contextMenu.commit.createBranch'),
 
 				visible: visibility.createBranch,
 
@@ -1990,13 +1990,13 @@
 
 			{
 
-				title: 'Checkout' + (globalState.alwaysAcceptCheckoutCommit ? '' : ELLIPSIS),
+				title: t('contextMenu.commit.checkout'),
 
 				visible: visibility.checkout,
 
 				onClick: () => {
 
-					const checkoutCommit = () => runAction({ command: 'checkoutCommit', repo: this.currentRepo, commitHash: hash }, 'Checking out Commit');
+					const checkoutCommit = () => runAction({ command: 'checkoutCommit', repo: this.currentRepo, commitHash: hash }, t('action.checkingOutCommit'));
 
 					if (globalState.alwaysAcceptCheckoutCommit) {
 
@@ -2022,7 +2022,7 @@
 
 			}, {
 
-				title: 'Cherry Pick' + ELLIPSIS,
+				title: t('contextMenu.commit.cherrypick'),
 
 				visible: visibility.cherrypick,
 
@@ -2098,7 +2098,7 @@
 
 							noCommit: <boolean>values[1]
 
-						}, 'Cherry picking Commit');
+						}, t('action.cherryPicking'));
 
 					}, target);
 
@@ -2106,7 +2106,7 @@
 
 			}, {
 
-				title: 'Revert' + ELLIPSIS,
+				title: t('contextMenu.commit.revert'),
 
 				visible: visibility.revert,
 
@@ -2124,7 +2124,7 @@
 
 						dialog.showSelect('Are you sure you want to revert merge commit <b><i>' + abbrevCommit(hash) + '</i></b>? Choose the parent hash on the main branch, to revert the commit relative to:', '1', options, 'Yes, revert', (parentIndex) => {
 
-							runAction({ command: 'revertCommit', repo: this.currentRepo, commitHash: hash, parentIndex: parseInt(parentIndex) }, 'Reverting Commit');
+							runAction({ command: 'revertCommit', repo: this.currentRepo, commitHash: hash, parentIndex: parseInt(parentIndex) }, t('action.revertingCommit'));
 
 						}, target);
 
@@ -2132,7 +2132,7 @@
 
 						dialog.showConfirmation('Are you sure you want to revert commit <b><i>' + abbrevCommit(hash) + '</i></b>?', 'Yes, revert', () => {
 
-							runAction({ command: 'revertCommit', repo: this.currentRepo, commitHash: hash, parentIndex: 0 }, 'Reverting Commit');
+							runAction({ command: 'revertCommit', repo: this.currentRepo, commitHash: hash, parentIndex: 0 }, t('action.revertingCommit'));
 
 						}, target);
 
@@ -2142,7 +2142,7 @@
 
 			}, {
 
-				title: 'Drop' + ELLIPSIS,
+				title: t('contextMenu.commit.drop'),
 
 				visible: visibility.drop && this.graph.dropCommitPossible(this.commitLookup[hash]),
 
@@ -2150,7 +2150,7 @@
 
 					dialog.showConfirmation('Are you sure you want to permanently drop commit <b><i>' + abbrevCommit(hash) + '</i></b>?' + (this.onlyFollowFirstParent ? '<br/><i>Note: By enabling "Only follow the first parent of commits", some commits may have been hidden from the Git Graph View that could affect the outcome of performing this action.</i>' : ''), 'Yes, drop', () => {
 
-						runAction({ command: 'dropCommit', repo: this.currentRepo, commitHash: hash }, 'Dropping Commit');
+						runAction({ command: 'dropCommit', repo: this.currentRepo, commitHash: hash }, t('action.droppingCommit'));
 
 					}, target);
 
@@ -2162,7 +2162,7 @@
 
 			{
 
-				title: 'Merge into current branch' + ELLIPSIS,
+				title: t('contextMenu.branch.merge'),
 
 				visible: visibility.merge,
 
@@ -2170,7 +2170,7 @@
 
 			}, {
 
-				title: 'Rebase current branch on this Commit' + ELLIPSIS,
+				title: t('contextMenu.commit.rebase'),
 
 				visible: visibility.rebase,
 
@@ -2178,7 +2178,7 @@
 
 			}, {
 
-				title: 'Reset current branch to this Commit' + ELLIPSIS,
+				title: t('contextMenu.commit.reset'),
 
 				visible: visibility.reset,
 
@@ -2194,7 +2194,7 @@
 
 					], 'Yes, reset', (mode) => {
 
-						runAction({ command: 'resetToCommit', repo: this.currentRepo, commit: hash, resetMode: <GG.GitResetMode>mode }, 'Resetting to Commit');
+						runAction({ command: 'resetToCommit', repo: this.currentRepo, commit: hash, resetMode: <GG.GitResetMode>mode }, t('action.resettingToCommit'));
 
 					}, target);
 
@@ -2206,7 +2206,7 @@
 
 			{
 
-				title: 'Copy Commit Hash to Clipboard',
+				title: t('contextMenu.commit.copyHash'),
 
 				visible: visibility.copyHash,
 
@@ -2220,7 +2220,7 @@
 
 			{
 
-				title: 'Copy Commit Subject to Clipboard',
+				title: t('contextMenu.commit.copySubject'),
 
 				visible: visibility.copySubject,
 
@@ -2250,7 +2250,7 @@
 
 			{
 
-				title: 'Checkout Branch' + ELLIPSIS,
+				title: t('contextMenu.remoteBranch.checkout'),
 
 				visible: visibility.checkout,
 
@@ -2258,7 +2258,7 @@
 
 			}, {
 
-				title: 'Delete Remote Branch' + ELLIPSIS,
+				title: t('contextMenu.remoteBranch.delete'),
 
 				visible: visibility.delete && remote !== '',
 
@@ -2266,7 +2266,7 @@
 
 					dialog.showConfirmation('Are you sure you want to delete the remote branch <b><i>' + escapeHtml(refName) + '</i></b>?', 'Yes, delete', () => {
 
-						runAction({ command: 'deleteRemoteBranch', repo: this.currentRepo, branchName: branchName, remote: remote }, 'Deleting Remote Branch');
+						runAction({ command: 'deleteRemoteBranch', repo: this.currentRepo, branchName: branchName, remote: remote }, t('action.deletingRemoteBranch'));
 
 					}, target);
 
@@ -2274,7 +2274,7 @@
 
 			}, {
 
-				title: 'Fetch into local branch' + ELLIPSIS,
+				title: t('contextMenu.remoteBranch.fetch'),
 
 				visible: visibility.fetch && remote !== '' && this.gitBranches.includes(branchName) && this.gitBranchHead !== branchName,
 
@@ -2292,7 +2292,7 @@
 
 					}], 'Yes, fetch', (values) => {
 
-						runAction({ command: 'fetchIntoLocalBranch', repo: this.currentRepo, remote: remote, remoteBranch: branchName, localBranch: branchName, force: <boolean>values[0] }, 'Fetching Branch');
+						runAction({ command: 'fetchIntoLocalBranch', repo: this.currentRepo, remote: remote, remoteBranch: branchName, localBranch: branchName, force: <boolean>values[0] }, t('action.fetchingBranch'));
 
 					}, target);
 
@@ -2300,7 +2300,7 @@
 
 			}, {
 
-				title: 'Merge into current branch' + ELLIPSIS,
+				title: t('contextMenu.branch.merge'),
 
 				visible: visibility.merge,
 
@@ -2308,7 +2308,7 @@
 
 			}, {
 
-				title: 'Pull into current branch' + ELLIPSIS,
+				title: t('contextMenu.remoteBranch.pull'),
 
 				visible: visibility.pull && remote !== '',
 
@@ -2322,7 +2322,7 @@
 
 					], 'Yes, pull', (values) => {
 
-						runAction({ command: 'pullBranch', repo: this.currentRepo, branchName: branchName, remote: remote, createNewCommit: <boolean>values[0], squash: <boolean>values[1] }, 'Pulling Branch');
+						runAction({ command: 'pullBranch', repo: this.currentRepo, branchName: branchName, remote: remote, createNewCommit: <boolean>values[0], squash: <boolean>values[1] }, t('action.pullingBranch'));
 
 					}, target);
 
@@ -2336,7 +2336,7 @@
 
 			{
 
-				title: 'Create Pull Request',
+				title: t('contextMenu.remoteBranch.createPullRequest'),
 
 				visible: visibility.createPullRequest && this.gitRepos[this.currentRepo].pullRequestConfig !== null && branchName !== 'HEAD' &&
 
@@ -2368,7 +2368,7 @@
 
 						push: false
 
-					}, 'Creating Pull Request');
+					}, t('action.creatingPullRequest'));
 
 				}
 
@@ -2378,13 +2378,13 @@
 
 			{
 
-				title: 'Create Archive',
+				title: t('contextMenu.branch.createArchive'),
 
 				visible: visibility.createArchive,
 
 				onClick: () => {
 
-					runAction({ command: 'createArchive', repo: this.currentRepo, ref: refName }, 'Creating Archive');
+					runAction({ command: 'createArchive', repo: this.currentRepo, ref: refName }, t('action.creatingArchive'));
 
 				}
 
@@ -2392,7 +2392,7 @@
 
 			{
 
-				title: 'Select in Branches Dropdown',
+				title: t('contextMenu.branch.selectInDropdown'),
 
 				visible: visibility.selectInBranchesDropdown && !isSelectedInBranchesDropdown,
 
@@ -2402,7 +2402,7 @@
 
 			{
 
-				title: 'Unselect in Branches Dropdown',
+				title: t('contextMenu.branch.unselectInDropdown'),
 
 				visible: visibility.unselectInBranchesDropdown && isSelectedInBranchesDropdown,
 
@@ -2414,7 +2414,7 @@
 
 			{
 
-				title: 'Copy Branch Name to Clipboard',
+				title: t('contextMenu.branch.copyName'),
 
 				visible: visibility.copyName,
 
@@ -2438,7 +2438,7 @@
 
 			{
 
-				title: 'Apply Stash' + ELLIPSIS,
+				title: t('contextMenu.stash.apply'),
 
 				visible: visibility.apply,
 
@@ -2456,7 +2456,7 @@
 
 					}], 'Yes, apply stash', (values) => {
 
-						runAction({ command: 'applyStash', repo: this.currentRepo, selector: selector, reinstateIndex: <boolean>values[0] }, 'Applying Stash');
+						runAction({ command: 'applyStash', repo: this.currentRepo, selector: selector, reinstateIndex: <boolean>values[0] }, t('action.applyingStash'));
 
 					}, target);
 
@@ -2464,7 +2464,7 @@
 
 			}, {
 
-				title: 'Create Branch from Stash' + ELLIPSIS,
+				title: t('contextMenu.stash.createBranch'),
 
 				visible: visibility.createBranch,
 
@@ -2472,7 +2472,7 @@
 
 					dialog.showRefInput('Create a branch from stash <b><i>' + escapeHtml(selector.substring(5)) + '</i></b> with the name:', '', 'Create Branch', (branchName) => {
 
-						runAction({ command: 'branchFromStash', repo: this.currentRepo, selector: selector, branchName: branchName }, 'Creating Branch');
+						runAction({ command: 'branchFromStash', repo: this.currentRepo, selector: selector, branchName: branchName }, t('action.creatingBranch'));
 
 					}, target);
 
@@ -2480,7 +2480,7 @@
 
 			}, {
 
-				title: 'Pop Stash' + ELLIPSIS,
+				title: t('contextMenu.stash.pop'),
 
 				visible: visibility.pop,
 
@@ -2498,7 +2498,7 @@
 
 					}], 'Yes, pop stash', (values) => {
 
-						runAction({ command: 'popStash', repo: this.currentRepo, selector: selector, reinstateIndex: <boolean>values[0] }, 'Popping Stash');
+						runAction({ command: 'popStash', repo: this.currentRepo, selector: selector, reinstateIndex: <boolean>values[0] }, t('action.poppingStash'));
 
 					}, target);
 
@@ -2506,7 +2506,7 @@
 
 			}, {
 
-				title: 'Drop Stash' + ELLIPSIS,
+				title: t('contextMenu.stash.drop'),
 
 				visible: visibility.drop,
 
@@ -2514,7 +2514,7 @@
 
 					dialog.showConfirmation('Are you sure you want to drop the stash <b><i>' + escapeHtml(selector.substring(5)) + '</i></b>?', 'Yes, drop', () => {
 
-						runAction({ command: 'dropStash', repo: this.currentRepo, selector: selector }, 'Dropping Stash');
+						runAction({ command: 'dropStash', repo: this.currentRepo, selector: selector }, t('action.droppingStash'));
 
 					}, target);
 
@@ -2526,7 +2526,7 @@
 
 			{
 
-				title: 'Copy Stash Name to Clipboard',
+				title: t('contextMenu.stash.copyName'),
 
 				visible: visibility.copyName,
 
@@ -2538,7 +2538,7 @@
 
 			}, {
 
-				title: 'Copy Stash Hash to Clipboard',
+				title: t('contextMenu.stash.copyHash'),
 
 				visible: visibility.copyHash,
 
@@ -2562,19 +2562,19 @@
 
 			{
 
-				title: 'View Details',
+				title: t('contextMenu.tag.viewDetails'),
 
 				visible: visibility.viewDetails && isAnnotated,
 
 				onClick: () => {
 
-					runAction({ command: 'tagDetails', repo: this.currentRepo, tagName: tagName, commitHash: hash }, 'Retrieving Tag Details');
+					runAction({ command: 'tagDetails', repo: this.currentRepo, tagName: tagName, commitHash: hash }, t('action.retrievingTagDetails'));
 
 				}
 
 			}, {
 
-				title: 'Delete Tag' + ELLIPSIS,
+				title: t('contextMenu.tag.delete'),
 
 				visible: visibility.delete,
 
@@ -2616,7 +2616,7 @@
 
 			}, {
 
-				title: 'Push Tag' + ELLIPSIS,
+				title: t('contextMenu.tag.push'),
 
 				visible: visibility.push && this.gitRemotes.length > 0,
 
@@ -2638,7 +2638,7 @@
 
 							skipRemoteCheck: globalState.pushTagSkipRemoteCheck
 
-						}, 'Pushing Tag');
+						}, t('action.pushingTag'));
 
 					};
 
@@ -2672,13 +2672,13 @@
 
 			{
 
-				title: 'Create Archive',
+				title: t('contextMenu.branch.createArchive'),
 
 				visible: visibility.createArchive,
 
 				onClick: () => {
 
-					runAction({ command: 'createArchive', repo: this.currentRepo, ref: tagName }, 'Creating Archive');
+					runAction({ command: 'createArchive', repo: this.currentRepo, ref: tagName }, t('action.creatingArchive'));
 
 				}
 
@@ -2686,7 +2686,7 @@
 
 			{
 
-				title: 'Copy Tag Name to Clipboard',
+				title: t('contextMenu.tag.copyName'),
 
 				visible: visibility.copyName,
 
@@ -2710,7 +2710,7 @@
 
 			{
 
-				title: 'Stash uncommitted changes' + ELLIPSIS,
+				title: t('contextMenu.uncommitted.stash'),
 
 				visible: visibility.stash,
 
@@ -2724,7 +2724,7 @@
 
 					], 'Yes, stash', (values) => {
 
-						runAction({ command: 'pushStash', repo: this.currentRepo, message: <string>values[0], includeUntracked: <boolean>values[1] }, 'Stashing uncommitted changes');
+						runAction({ command: 'pushStash', repo: this.currentRepo, message: <string>values[0], includeUntracked: <boolean>values[1] }, t('action.stashingChanges'));
 
 					}, target);
 
@@ -2736,7 +2736,7 @@
 
 			{
 
-				title: 'Reset uncommitted changes' + ELLIPSIS,
+				title: t('contextMenu.uncommitted.reset'),
 
 				visible: visibility.reset,
 
@@ -2750,7 +2750,7 @@
 
 					], 'Yes, reset', (mode) => {
 
-						runAction({ command: 'resetToCommit', repo: this.currentRepo, commit: 'HEAD', resetMode: <GG.GitResetMode>mode }, 'Resetting uncommitted changes');
+						runAction({ command: 'resetToCommit', repo: this.currentRepo, commit: 'HEAD', resetMode: <GG.GitResetMode>mode }, t('action.resettingUncommitted'));
 
 					}, target);
 
@@ -2758,7 +2758,7 @@
 
 			}, {
 
-				title: 'Clean untracked files' + ELLIPSIS,
+				title: t('contextMenu.uncommitted.clean'),
 
 				visible: visibility.clean,
 
@@ -2766,7 +2766,7 @@
 
 					dialog.showCheckbox('Are you sure you want to clean all untracked files?', 'Clean untracked directories', true, 'Yes, clean', directories => {
 
-						runAction({ command: 'cleanUntrackedFiles', repo: this.currentRepo, directories: directories }, 'Cleaning untracked files');
+						runAction({ command: 'cleanUntrackedFiles', repo: this.currentRepo, directories: directories }, t('action.cleaningUntracked'));
 
 					}, target);
 
@@ -2778,7 +2778,7 @@
 
 			{
 
-				title: 'Open Source Control View',
+				title: t('contextMenu.uncommitted.openSCM'),
 
 				visible: visibility.openSourceControlView,
 
@@ -2822,7 +2822,7 @@
 
 		return {
 
-			title: 'View Issue' + (issueLinks.length > 1 ? ELLIPSIS : ''),
+			title: t('contextMenu.branch.viewIssue'),
 
 			visible: issueLinks.length > 0,
 
@@ -2944,7 +2944,7 @@
 
 					force: force
 
-				}, 'Adding Tag');
+				}, t('action.addingTag'));
 
 			};
 
@@ -3012,13 +3012,13 @@
 
 								: null
 
-						}, 'Checking out Branch' + (canPullFromRemote ? ' & Pulling Changes' : ''));
+						}, t('action.checkingOutBranch') + (canPullFromRemote ? ' & Pulling Changes' : ''));
 
 					}, target);
 
 				} else {
 
-					runAction({ command: 'checkoutBranch', repo: this.currentRepo, branchName: newBranch, remoteBranch: refName, pullAfterwards: null }, 'Checking out Branch');
+					runAction({ command: 'checkoutBranch', repo: this.currentRepo, branchName: newBranch, remoteBranch: refName, pullAfterwards: null }, t('action.checkingOutBranch'));
 
 				}
 
@@ -3026,7 +3026,7 @@
 
 		} else {
 
-			runAction({ command: 'checkoutBranch', repo: this.currentRepo, branchName: refName, remoteBranch: null, pullAfterwards: null }, 'Checking out Branch');
+			runAction({ command: 'checkoutBranch', repo: this.currentRepo, branchName: refName, remoteBranch: null, pullAfterwards: null }, t('action.checkingOutBranch'));
 
 		}
 
@@ -3048,7 +3048,7 @@
 
 				dialog.showTwoButtons('A branch named <b><i>' + escapeHtml(branchName) + '</i></b> already exists, do you want to replace it with this new branch?', 'Yes, replace the existing branch', () => {
 
-					runAction({ command: 'createBranch', repo: this.currentRepo, branchName: branchName, commitHash: hash, checkout: checkOut, force: true }, 'Creating Branch');
+					runAction({ command: 'createBranch', repo: this.currentRepo, branchName: branchName, commitHash: hash, checkout: checkOut, force: true }, t('action.creatingBranch'));
 
 				}, 'No, choose another branch name', () => {
 
@@ -3058,7 +3058,7 @@
 
 			} else {
 
-				runAction({ command: 'createBranch', repo: this.currentRepo, branchName: branchName, commitHash: hash, checkout: checkOut, force: false }, 'Creating Branch');
+				runAction({ command: 'createBranch', repo: this.currentRepo, branchName: branchName, commitHash: hash, checkout: checkOut, force: false }, t('action.creatingBranch'));
 
 			}
 
@@ -3068,13 +3068,13 @@
 
 	private deleteTagAction(refName: string, deleteOnRemote: string | null) {
 
-		runAction({ command: 'deleteTag', repo: this.currentRepo, tagName: refName, deleteOnRemote: deleteOnRemote }, 'Deleting Tag');
+		runAction({ command: 'deleteTag', repo: this.currentRepo, tagName: refName, deleteOnRemote: deleteOnRemote }, t('action.deletingTag'));
 
 	}
 
 	private fetchFromRemotesAction() {
 
-		runAction({ command: 'fetch', repo: this.currentRepo, name: null, prune: this.config.fetchAndPrune, pruneTags: this.config.fetchAndPruneTags }, 'Fetching from Remote(s)');
+		runAction({ command: 'fetch', repo: this.currentRepo, name: null, prune: this.config.fetchAndPrune, pruneTags: this.config.fetchAndPruneTags }, t('action.fetching'));
 
 	}
 
@@ -3338,7 +3338,7 @@
 
 					{
 
-						title: 'Date',
+						title: t('column.date'),
 
 						visible: true,
 
@@ -3350,7 +3350,7 @@
 
 					{
 
-						title: 'Author',
+						title: t('column.author'),
 
 						visible: true,
 
@@ -3362,7 +3362,7 @@
 
 					{
 
-						title: 'Commit',
+						title: t('column.commit'),
 
 						visible: true,
 
@@ -3378,7 +3378,7 @@
 
 					{
 
-						title: 'Commit Timestamp Order',
+						title: t('commitOrdering.date'),
 
 						visible: true,
 
@@ -3390,7 +3390,7 @@
 
 					{
 
-						title: 'Author Timestamp Order',
+						title: t('commitOrdering.authorDate'),
 
 						visible: true,
 
@@ -3402,7 +3402,7 @@
 
 					{
 
-						title: 'Topological Order',
+						title: t('commitOrdering.topological'),
 
 						visible: true,
 
@@ -3976,7 +3976,7 @@
 
 						{
 
-							title: 'Open URL',
+							title: t('link.openUrl'),
 
 							visible: isExternalUrl,
 
@@ -3990,7 +3990,7 @@
 
 						{
 
-							title: 'Follow Internal Link',
+							title: t('link.followInternal'),
 
 							visible: isInternalUrl,
 
@@ -4000,7 +4000,7 @@
 
 						{
 
-							title: 'Copy URL to Clipboard',
+							title: t('link.copyUrl'),
 
 							visible: isExternalUrl,
 
@@ -4614,7 +4614,7 @@
 
 		if (expandedCommit.loading) {
 
-			html += '<div id="cdvLoading">' + SVG_ICONS.loading + ' Loading ' + (expandedCommit.compareWithHash === null ? expandedCommit.commitHash !== UNCOMMITTED ? 'Commit Details' : 'Uncommitted Changes' : 'Commit Comparison') + ' ...</div>';
+			html += '<div id="cdvLoading">' + SVG_ICONS.loading + ' Loading ' + (expandedCommit.compareWithHash === null ? expandedCommit.commitHash !== UNCOMMITTED ? 'Commit Details' : t('commit.uncommittedChanges') : 'Commit Comparison') + ' ...</div>';
 
 		} else {
 
@@ -4690,7 +4690,7 @@
 
 				// Commit comparison should be shown
 
-				html += 'Displaying all changes from <b>' + commitOrder.from + '</b> to <b>' + (commitOrder.to !== UNCOMMITTED ? commitOrder.to : 'Uncommitted Changes') + '</b>.';
+				html += 'Displaying all changes from <b>' + commitOrder.from + '</b> to <b>' + (commitOrder.to !== UNCOMMITTED ? commitOrder.to : t('commit.uncommittedChanges')) + '</b>.';
 
 			}
 
@@ -4900,7 +4900,7 @@
 
 						isGui: this.gitConfig.guiDiffTool !== null
 
-					}, 'Opening External Directory Diff');
+					}, t('action.openingExternalDirDiff'));
 
 				});
 
@@ -5096,7 +5096,7 @@
 
 			lastViewedElem.id = 'cdvLastFileViewed';
 
-			lastViewedElem.title = 'Last File Viewed';
+			lastViewedElem.title = t('cdv.lastFileViewed');
 
 			lastViewedElem.innerHTML = SVG_ICONS.eyeOpen;
 
@@ -5328,7 +5328,7 @@
 
 			dialog.showConfirmation('Are you sure you want to reset <b><i>' + escapeHtml(file.newFilePath) + '</i></b> to it\'s state at commit <b><i>' + abbrevCommit(commitHash) + '</i></b>? Any uncommitted changes made to this file will be overwritten.', 'Yes, reset file', () => {
 
-				runAction({ command: 'resetFileToRevision', repo: this.currentRepo, commitHash: commitHash, filePath: file.newFilePath }, 'Resetting file');
+				runAction({ command: 'resetFileToRevision', repo: this.currentRepo, commitHash: commitHash, filePath: file.newFilePath }, t('action.resettingFile'));
 
 			}, {
 
@@ -5512,7 +5512,7 @@
 
 					{
 
-						title: 'View Diff',
+						title: t('file.viewDiff'),
 
 						visible: visibility.viewDiff && diffPossible,
 
@@ -5522,7 +5522,7 @@
 
 					{
 
-						title: 'View File at this Revision',
+						title: t('file.viewFileAtRevision'),
 
 						visible: visibility.viewFileAtThisRevision && fileExistsAtThisRevisionAndDiffPossible,
 
@@ -5532,7 +5532,7 @@
 
 					{
 
-						title: 'View Diff with Working File',
+						title: t('file.viewDiffWithWorking'),
 
 						visible: visibility.viewDiffWithWorkingFile && fileExistsAtThisRevisionAndDiffPossible,
 
@@ -5542,7 +5542,7 @@
 
 					{
 
-						title: 'Open File',
+						title: t('file.openFile'),
 
 						visible: visibility.openFile && file.type !== GG.GitFileStatus.Deleted,
 
@@ -5556,7 +5556,7 @@
 
 					{
 
-						title: 'Mark as Reviewed',
+						title: t('file.markAsReviewed'),
 
 						visible: visibility.markAsReviewed && codeReviewInProgressAndNotReviewed,
 
@@ -5566,7 +5566,7 @@
 
 					{
 
-						title: 'Mark as Not Reviewed',
+						title: t('file.markAsNotReviewed'),
 
 						visible: visibility.markAsNotReviewed && expandedCommit.codeReview !== null && !codeReviewInProgressAndNotReviewed,
 
@@ -5580,7 +5580,7 @@
 
 					{
 
-						title: 'Reset File to this Revision' + ELLIPSIS,
+						title: t('file.resetToRevision'),
 
 						visible: visibility.resetFileToThisRevision && fileExistsAtThisRevision && expandedCommit.compareWithHash === null,
 
@@ -5594,7 +5594,7 @@
 
 					{
 
-						title: 'Copy Absolute File Path to Clipboard',
+						title: t('file.copyAbsolutePath'),
 
 						visible: visibility.copyAbsoluteFilePath,
 
@@ -5604,7 +5604,7 @@
 
 					{
 
-						title: 'Copy Relative File Path to Clipboard',
+						title: t('file.copyRelativePath'),
 
 						visible: visibility.copyRelativeFilePath,
 
@@ -5832,7 +5832,7 @@ window.addEventListener('load', () => {
 
 					gitGraph.closeCommitDetails(true);
 
-					dialog.showError('Unable to load Commit Details', msg.error, null, null);
+					dialog.showError(t('error.unableLoadCommitDetails'), msg.error, null, null);
 
 				}
 
@@ -5848,7 +5848,7 @@ window.addEventListener('load', () => {
 
 					gitGraph.closeCommitComparison(true);
 
-					dialog.showError('Unable to load Commit Comparison', msg.error, null, null);
+					dialog.showError(t('error.unableLoadCommitComparison'), msg.error, null, null);
 
 				}
 
@@ -6213,7 +6213,7 @@ window.addEventListener('load', () => {
 
 			dialog.showConfirmation('The branch <b><i>' + escapeHtml(msg.branchName) + '</i></b> is not fully merged. Would you like to force delete it?', 'Yes, force delete branch', () => {
 
-				runAction({ command: 'deleteBranch', repo: msg.repo, branchName: msg.branchName, forceDelete: true, deleteOnRemotes: msg.deleteOnRemotes }, 'Deleting Branch');
+				runAction({ command: 'deleteBranch', repo: msg.repo, branchName: msg.branchName, forceDelete: true, deleteOnRemotes: msg.deleteOnRemotes }, t('action.deletingBranch'));
 
 			}, { type: TargetType.Repo });
 
@@ -6261,7 +6261,7 @@ window.addEventListener('load', () => {
 
 				skipRemoteCheck: true
 
-			}, 'Pushing Tag');
+			}, t('action.pushingTag'));
 
 		}, { type: TargetType.Repo }, 'Cancel', null, true);
 

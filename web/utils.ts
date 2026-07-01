@@ -66,6 +66,19 @@ const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const UNCOMMITTED = '*';
 const SHOW_ALL_BRANCHES = '';
 
+/**
+ * Get a translated string by key. Falls back to the key itself if no translation is found.
+ * Supports positional parameters like {0}, {1}, etc.
+ */
+function t(key: string, ...args: string[]): string {
+	const translations = initialState.translations || {};
+	let template = translations[key] || key;
+	return template.replace(/\{(\d+)\}/g, (_, index) => {
+		const i = parseInt(index, 10);
+		return i < args.length ? args[i] : '?' + index + '?';
+	});
+}
+
 const COLUMN_HIDDEN = -100;
 const COLUMN_AUTO = -101;
 

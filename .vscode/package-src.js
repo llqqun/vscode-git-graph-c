@@ -5,6 +5,7 @@ const path = require('path');
 const SRC_DIRECTORY = './src';
 const OUT_DIRECTORY = './out';
 const ASKPASS_DIRECTORY = 'askpass';
+const I18N_DIRECTORY = 'i18n';
 
 // Adjust any scripts that require the Node.js File System Module to use the Node.js version (as Electron overrides the fs module with its own version of the module)
 fs.readdirSync(OUT_DIRECTORY).forEach((fileName) => {
@@ -32,5 +33,18 @@ fs.readdirSync(path.join(SRC_DIRECTORY, ASKPASS_DIRECTORY)).forEach((fileName) =
 		// If the file is a shell script, read its contents and write it to the output directory
 		const scriptContents = fs.readFileSync(path.join(SRC_DIRECTORY, ASKPASS_DIRECTORY, fileName)).toString();
 		fs.writeFileSync(path.join(OUT_DIRECTORY, ASKPASS_DIRECTORY, fileName), scriptContents);
+	}
+});
+
+// Copy the i18n JSON files to the output directory
+const i18nSrcDir = path.join(SRC_DIRECTORY, I18N_DIRECTORY);
+const i18nOutDir = path.join(OUT_DIRECTORY, I18N_DIRECTORY);
+if (!fs.existsSync(i18nOutDir)) {
+	fs.mkdirSync(i18nOutDir);
+}
+fs.readdirSync(i18nSrcDir).forEach((fileName) => {
+	if (fileName.endsWith('.json')) {
+		const jsonContents = fs.readFileSync(path.join(i18nSrcDir, fileName)).toString();
+		fs.writeFileSync(path.join(i18nOutDir, fileName), jsonContents);
 	}
 });
